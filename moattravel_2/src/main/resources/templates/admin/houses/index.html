@@ -12,7 +12,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
-			<!-- thスタート→Thymeleafの機能-->
+	<!-- thスタート→Thymeleafの機能-->
 	<link th:href="@{/css/style.css}" rel="stylesheet">
 
 	<title>民宿一覧</title>
@@ -62,8 +62,8 @@
 									th:each　ループさせる　
 									繰り返しの表示
 								-->
-								<tr th:each="house : ${houses}">
-									
+								<tr th:each="house : ${housesPage}">
+
 									<!--th:text
 										td要素のテキストを表示
 									-->
@@ -76,18 +76,50 @@
 								</tr>
 							</tbody>
 						</table>
+						<!-- ページネーション -->
+						<div th:if="${housePage.getTotalPages() > 1}" class="d-flex justify-content-center">
+							<nav aria-label="民宿一覧ページ">
+								<ul class="pagination">
+									<li class="page-item">
+										<span th:if="${housePage.isFirst()}" class="page-link disabled">前</span>
+										<a th:unless="${housePage.isFirst()}"
+											th:href="@{/admin/houses(page = ${housePage.getNumber() - 1})}"
+											class="page-link moattravel-page-link">前</a>
+									</li>
 
+									<li th:each="i : ${#numbers.sequence(0, housePage.getTotalPages() - 1)}"
+										class="page-item">
+										<span th:if="${i == housePage.getNumber()}"
+											class="page-link active moattravel-active" th:text="${i + 1}"></span>
+										<a th:unless="${i == housePage.getNumber()}"
+											th:href="@{/admin/houses(page = ${i})}"
+											class="page-link moattravel-page-link" th:text="${i + 1}"></a>
+									</li>
+
+									<li class="page-item">
+										<span th:if="${housePage.isLast()}" class="page-link disabled">次</span>
+										<a th:unless="${housePage.isLast()}"
+											th:href="@{/admin/houses(page = ${housePage.getNumber() + 1})}"
+											class="page-link moattravel-page-link">次</a>
+									</li>
+								</ul>
+							</nav>
+
+						</div>
 					</div>
 				</div>
-			</div>
 		</main>
+	</div>
+	</div>
+	</div>
+	</main>
 
-		<footer>
-			<!-- フッター -->
-			<div class="d-flex justify-content-center align-items-center h-100">
-				<p class="text-center text-muted small mb-0">&copy; moat Travel All rights reserved.</p>
-			</div>
-		</footer>
+	<footer>
+		<!-- フッター -->
+		<div class="d-flex justify-content-center align-items-center h-100">
+			<p class="text-center text-muted small mb-0">&copy; moat Travel All rights reserved.</p>
+		</div>
+	</footer>
 	</div>
 
 	<!-- Bootstrap -->
