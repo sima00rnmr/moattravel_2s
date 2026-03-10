@@ -39,71 +39,73 @@ Controller
 ### GPT君が作ったプロジェクト全体マップ
 なんかファイル名とかが怪しいところがあるので、時間に余裕がある時に修正
 
+```
 MoatTravel
 │
-├── House（民宿）
-│     ├ Controller
-│     │   HouseController
-│     │   AdminHouseController
-│     │
-│     ├ Entity
-│     │   House
-│     │
-│     ├ Repository
-│     │   HouseRepository
-│     │
-│     └ View
-│         houses/index.html
-│         houses/show.html
+├─ House（民宿）
+│   ├─ Controller
+│   │   ├─ HouseController
+│   │   └─ AdminHouseController
+│   │
+│   ├─ Entity
+│   │   └─ House
+│   │
+│   ├─ Repository
+│   │   └─ HouseRepository
+│   │
+│   └─ View
+│       ├─ houses/index.html
+│       └─ houses/show.html
 │
-├── User（会員）
-│     ├ Controller
-│     │   AuthController
-│     │   UserController
-│     │   AdminUserController
-│     │
-│     ├ Entity
-│     │   User
-│     │
-│     ├ Repository
-│     │   UserRepository
-│     │
-│     └ View
-│         auth/login.html
-│         auth/signup.html
-│         users/show.html
-│         users/edit.html
+├─ User（会員）
+│   ├─ Controller
+│   │   ├─ AuthController
+│   │   ├─ UserController
+│   │   └─ AdminUserController
+│   │
+│   ├─ Entity
+│   │   └─ User
+│   │
+│   ├─ Repository
+│   │   └─ UserRepository
+│   │
+│   └─ View
+│       ├─ auth/login.html
+│       ├─ auth/signup.html
+│       ├─ users/show.html
+│       └─ users/edit.html
 │
-├── Reservation（予約）
-│     ├ Controller
-│     │   ReservationController
-│     │
-│     ├ Entity
-│     │   Reservation
-│     │
-│     ├ Repository
-│     │   ReservationRepository
-│     │
-│     └ View
-│         reservations/confirm.html
-│         reservations/index.html
+├─ Reservation（予約）
+│   ├─ Controller
+│   │   └─ ReservationController
+│   │
+│   ├─ Entity
+│   │   └─ Reservation
+│   │
+│   ├─ Repository
+│   │   └─ ReservationRepository
+│   │
+│   └─ View
+│       ├─ reservations/confirm.html
+│       └─ reservations/index.html
 │
-├── Payment（決済）
-│     ├ Controller
-│     │   PaymentController
-│     │
-│     └ View
-│         payment/index.html
+├─ Payment（決済）
+│   ├─ Controller
+│   │   └─ PaymentController
+│   │
+│   └─ View
+│       └─ payment/index.html
 │
-└── Common（共通）
-      ├ Security
-      │   SecurityConfig
-      │
-      ├ Fragment
-      │   header.html
-      │   footer.html
-      │
-      └ Static
-          css
-          js
-          images
+└─ Common（共通）
+    ├─ Security
+    │   └─ SecurityConfig
+    │
+    ├─ Fragment
+    │   ├─ header.html
+    │   └─ footer.html
+    │
+    └─ Static
+        ├─ css
+        ├─ js
+        └─ images
+```
