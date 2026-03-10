@@ -24,17 +24,15 @@ import com.example.moattravel.form.HouseRegisterForm;
 import com.example.moattravel.repository.HouseRepository;
 import com.example.moattravel.service.HouseService;
 
-
-
 @Controller
 @RequestMapping("/admin/houses")
 public class AdminHouseController {
 	private final HouseRepository houseRepository;
 	private final HouseService houseService;
 
-	public AdminHouseController(HouseRepository houseRepository,HouseService houseService) {
+	public AdminHouseController(HouseRepository houseRepository, HouseService houseService) {
 		this.houseRepository = houseRepository;
-	    this.houseService = houseService;
+		this.houseService = houseService;
 	}
 
 	@GetMapping
@@ -76,31 +74,46 @@ public class AdminHouseController {
 
 		return "admin/houses/register";
 	}
-	
+
 	@PostMapping("/create")
-	public String create(@ModelAttribute @Validated HouseRegisterForm houseRegisterForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {  
-		if(bindingResult.hasErrors()) {
+	public String create(@ModelAttribute @Validated HouseRegisterForm houseRegisterForm, BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
+		if (bindingResult.hasErrors()) {
 			return "admin/houses/register";
-	
-			
+
 		}
 		houseService.create(houseRegisterForm);
-		redirectAttributes.addFlashAttribute("sussessMessage","民宿を登録しました");
+		redirectAttributes.addFlashAttribute("sussessMessage", "民宿を登録しました");
 		return "redirect:/admin/houses";
-		
+
 	}
-	
+
 	@GetMapping("/{id}/edit")
-	public String edit(@PathVariable(name = "id")Integer id,Model model) {
-		House house =houseRepository.getReferenceById(id);
+	public String edit(@PathVariable(name = "id") Integer id, Model model) {
+		House house = houseRepository.getReferenceById(id);
 		String imageName = house.getImageName();
-		 HouseEditForm houseEditForm = new HouseEditForm(house.getId(), house.getName(), null, house.getDescription(), house.getPrice(), house.getCapacity(), house.getPostalCode(), house.getAddress(), house.getPhoneNumber());
-		
+		HouseEditForm houseEditForm = new HouseEditForm(house.getId(), house.getName(), null, house.getDescription(),
+				house.getPrice(), house.getCapacity(), house.getPostalCode(), house.getAddress(),
+				house.getPhoneNumber());
+
 		model.addAttribute("imageName", imageName);
-		model.addAttribute("houseEditForm",houseEditForm);
-		
+		model.addAttribute("houseEditForm", houseEditForm);
+
 		return "admin/houses/edit";
 
 	}
-	
+
+	@PostMapping("/{id}/update")
+	public String update(@ModelAttribute @Validated HouseEditForm houseEditForm, BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
+		if (bindingResult.hasErrors()) {
+
+			return "admin/houses/edit";
+		}
+
+		houseService.update(houseEditForm);
+		redirectAttributes.addFlashAttribute("sucessMessage", "民宿情報を編集しました。");
+		return "redirect:/admin/houses";
+
+	}
 }
