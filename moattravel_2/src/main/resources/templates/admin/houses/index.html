@@ -12,7 +12,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
-			<!-- thスタート→Thymeleafの機能-->>
+			<!-- thスタート→Thymeleafの機能-->
 	<link th:href="@{/css/style.css}" rel="stylesheet">
 
 	<title>民宿一覧</title>
@@ -61,12 +61,12 @@
 								<!--　
 									th:each　ループさせる　
 									繰り返しの表示
-								-->>
+								-->
 								<tr th:each="house : ${houses}">
 									
 									<!--th:text
 										td要素のテキストを表示
-									-->>
+									-->
 									<td th:text="${house.getId()}"></td>
 									<td th:text="${house.getName()}"></td>
 									<td th:text="${house.getPostalCode()}"></td>
