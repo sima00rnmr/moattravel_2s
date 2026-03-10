@@ -19,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.moattravel.entity.House;
+import com.example.moattravel.form.HouseEditForm;
 import com.example.moattravel.form.HouseRegisterForm;
 import com.example.moattravel.repository.HouseRepository;
 import com.example.moattravel.service.HouseService;
+
+
 
 @Controller
 @RequestMapping("/admin/houses")
@@ -86,4 +89,18 @@ public class AdminHouseController {
 		return "redirect:/admin/houses";
 		
 	}
+	
+	@GetMapping("/{id}/edit")
+	public String edit(@PathVariable(name = "id")Integer id,Model model) {
+		House house =houseRepository.getReferenceById(id);
+		String imageName = house.getImageName();
+		 HouseEditForm houseEditForm = new HouseEditForm(house.getId(), house.getName(), null, house.getDescription(), house.getPrice(), house.getCapacity(), house.getPostalCode(), house.getAddress(), house.getPhoneNumber());
+		
+		model.addAttribute("imageName", imageName);
+		model.addAttribute("houseEditForm",houseEditForm);
+		
+		return "admin/houses/edit";
+
+	}
+	
 }

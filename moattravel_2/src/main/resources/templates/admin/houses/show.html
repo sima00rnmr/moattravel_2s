@@ -29,24 +29,44 @@
 		<div th:replace="~{fragment :: header}"></div>
 
 		<main>
-			<div class="container pt-4 pb-5 moattravel-container">
-				<div class="row justify-content-center">
-					<div class="col-xl-5 col-lg-6 col-md-8">
 
-						<nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-							<ol class="breadcrumb mb-0">
-								<li class="breadcrumb-item"><a th:href="@{/admin/houses}">民宿一覧</a></li>
-								<li class="breadcrumb-item active" aria-current="page">民宿詳細</li>
-							</ol>
-						</nav>
+		    <div class="container pt-4 pb-5 moattravel-container">
 
-						<h1 class="mb-4 text-center" th:text="${house.getName()}"></h1>
+		        <div class="row justify-content-center">
 
-						<div class="d-flex justify-content-end align-items-end mb-3">
-							<div>
-								<a href="#">編集</a>
-							</div>
-						</div>
+		            <div class="col-xl-5 col-lg-6 col-md-8">
+
+		                <nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+
+		                    <ol class="breadcrumb mb-0">                        
+
+		                        <li class="breadcrumb-item">
+		                            <a th:href="@{/admin/houses}">民宿一覧</a>
+		                        </li>
+
+		                        <li class="breadcrumb-item active" aria-current="page">
+		                            民宿詳細
+		                        </li>
+
+		                    </ol>
+
+		                </nav> 
+		                
+		                <h1 class="mb-4 text-center" th:text="${house.getName()}"></h1>
+		                
+		                <div class="d-flex justify-content-end align-items-end mb-3">                    
+
+		                    <div>
+
+		                       
+
+		                        <a th:href="@{/admin/houses/__${house.getId()}__/edit}">
+		                            編集
+		                        </a>                                   
+
+		                    </div>
+
+		                </div> 
 
 						<div class="mb-3">
 							<!--
