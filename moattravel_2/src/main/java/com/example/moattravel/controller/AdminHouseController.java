@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.moattravel.entity.House;
+import com.example.moattravel.form.HouseRegisterForm;
 import com.example.moattravel.repository.HouseRepository;
 
 @Controller
@@ -40,19 +41,28 @@ public class AdminHouseController {
 		//List<House> houses = houseRepository.findAll();　//PageAbleによって不要になる
 		model.addAttribute("housePage", housePage);
 		model.addAttribute("keyword", keyword);
-		
+
 		return "admin/houses/index";
 
 	}
-	
+
 	@GetMapping("{id}")
 	/*@PathVariableは
 	 * URLの一部をその引数にバインドする
 	 * 
 	 * */
-	public String show(@PathVariable(name = "id") Integer id,Model model) {
-		House house =houseRepository.getReferenceById(id);
-		model.addAttribute("house",house);
+	public String show(@PathVariable(name = "id") Integer id, Model model) {
+		House house = houseRepository.getReferenceById(id);
+
+		model.addAttribute("house", house);
+
 		return "admin/houses/show";
+	}
+
+	@GetMapping("/register")
+	public String register(Model model) {
+		model.addAttribute("houseRegisterForm", new HouseRegisterForm());
+
+		return "admin/houses/register";
 	}
 }

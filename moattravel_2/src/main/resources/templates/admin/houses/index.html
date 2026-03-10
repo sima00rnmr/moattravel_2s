@@ -24,18 +24,9 @@
 <body>
 	<div class="moattravel-wrapper">
 
-
 		<header>
 			<!-- ヘッダー -->
-			<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm moattravel-navbar">
-				<div class="container moattravel-container">
-					<a class="navbar-brand" th:href="@{/}">
-						<img class="moattravel-logo me-1" th:src="@{/images/logo.png}" alt="moat Travel">
-					</a>
-				</div>
-			</nav>
 			<div th:replace="~{fragment :: header}"></div>
-
 		</header>
 
 		<main>
@@ -46,20 +37,20 @@
 
 						<h1 class="mb-4 text-center">民宿一覧</h1>
 
-						<div class="d-flex justify-content-end">
-							<div class="d-flex justify-content-between align-items-end flex-wrap">
-								<form method="get" th:action="@{/admin/houses}" class="mb-3">
-									<div class="input-group">
-										<input type="text" class="form-control" name="keyword" th:value="${keyword}"
-											placeholder="民宿名">
-										<button type="submit"
-											class="btn text-white shadow-sm moattravel-btn">検索</button>
-									</div>
-								</form>
+						<div class="d-flex justify-content-between align-items-end flex-wrap">
+							<form method="get" th:action="@{/admin/houses}" class="mb-3">
+								<div class="input-group">
+									<input type="text" class="form-control" name="keyword" th:value="${keyword}"
+										placeholder="民宿名">
+									<button type="submit" class="btn text-white shadow-sm moattravel-btn">検索</button>
+								</div>
+							</form>
 
-								<a href="#" class="btn text-white shadow-sm mb-3 moattravel-btn">登録</a>
-							</div>
+							<a th:href="@{/admin/houses/register}"
+								class="btn text-white shadow-sm mb-3 moattravel-btn">登録</a>
+
 						</div>
+
 						<table class="table">
 							<thead>
 								<tr>
@@ -71,6 +62,7 @@
 									<th scope="col"></th>
 								</tr>
 							</thead>
+
 							<tbody>
 								<!--　
 									th:each　ループさせる　
@@ -88,10 +80,10 @@
 									<td th:text="${house.getPhoneNumber()}"></td>
 									<td><a th:href="@{/admin/houses/__${house.getId()}__}">詳細</a></td>
 
-
 								</tr>
 							</tbody>
 						</table>
+
 						<!-- ページネーション -->
 						<div th:if="${housePage.getTotalPages() > 1}" class="d-flex justify-content-center">
 							<nav aria-label="民宿一覧ページ">
@@ -132,17 +124,16 @@
 
 		<footer>
 			<!-- フッター -->
-			<div class="d-flex justify-content-center align-items-center h-100">
-				<p class="text-center text-muted small mb-0">&copy; moat Travel All rights reserved.</p>
-			</div>
+			<div th:replace="~{fragment :: footer}"></div>
 		</footer>
-		<div th:replace="~{fragment :: footer}"></div>
+
 	</div>
 
 	<!-- Bootstrap -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
 		crossorigin="anonymous"></script>
+
 	<div th:replace="~{fragment :: scripts}"></div>
 
 </body>
