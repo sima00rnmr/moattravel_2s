@@ -1,45 +1,49 @@
 <!DOCTYPE html>
-
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<div th:replace="~{fragment :: meta}"></div>
-	<div th:replace="~{fragment :: styles}"></div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <div th:replace="~{fragment :: meta}"></div>
+    <div th:replace="~{fragment :: styles}"></div>
 
-	<title>moat Travel</title>
+    <title>moat Travel</title>
 </head>
 
 <body>
-	<p>Hello,world!</p>
-	<div class="moattravel-wrapper">
-		<header>
-			<!-- ヘッダー -->
-			<div th:replace="~{fragment :: header}"></div>
-		</header>
 
-		<main>
-			<!-- メインコンテンツ -->
-			<div class="container pt-4 pb-5 moattravel-container">
-				<div th:if="${param.loggedIn}" class="alert alert-info">
-					ログインしました。
-				</div>
+<p>Hello,world!</p>
 
-				<div th:if="${param.loggedOut}" class="alert alert-info">
-					ログアウトしました。
-				</div>
-			</div>
+<div class="moattravel-wrapper">
 
-		</main>
+<header>
+    <!-- ヘッダー -->
+    <div th:replace="~{fragment :: header}"></div>
+</header>
 
-		<footer>
-			<!-- フッター -->
-			<div th:replace="~{fragment :: footer}"></div>
-			</div>  
-		</footer>
+<main>
+    <!-- メインコンテンツ -->
+    <div class="container pt-4 pb-5 moattravel-container">
 
+        <div th:if="${param.loggedIn}" class="alert alert-info">
+            ログインしました。
+        </div>
+
+        <div th:if="${param.loggedOut}" class="alert alert-info">
+            ログアウトしました。
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <!-- フッター -->
+    <div th:replace="~{fragment :: footer}"></div>
+</footer>
+
+</div>
+<div th:replace="~{fragment :: scripts}"></div>  
 </body>
-
 </html>
