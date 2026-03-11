@@ -60,7 +60,7 @@ public class UserDetailsImpl implements UserDetails {
 		return true;
 	}
 
-	//ユーザーがゆうこうであればTrueを返す
+	//ユーザーが 有効であればTrueを返す
 	@Override
 	public boolean isEnabled() {
 		return user.getEnabled();
