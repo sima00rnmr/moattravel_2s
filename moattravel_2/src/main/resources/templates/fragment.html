@@ -31,7 +31,9 @@
 
 	<!-- ヘッダーの部品化 -->
 	<div th:fragment="header" th:remove="tag">
+
 		<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm moattravel-navbar">
+
 			<div class="container moattravel-container">
 
 				<a class="navbar-brand" th:href="@{/}">
@@ -41,10 +43,13 @@
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 					aria-expanded="false" aria-label="Toggle navigation">
+
 					<span class="navbar-toggler-icon"></span>
+
 				</button>
 
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
 					<ul class="navbar-nav ms-auto">
 
 						<!-- 未ログイン -->
@@ -52,29 +57,44 @@
 							<a class="nav-link" th:href="@{/login}">ログイン</a>
 						</li>
 
+						<li class="nav-item" sec:authorize="isAnonymous()">
+							<a class="nav-link" th:href="@{/signup}">会員登録</a>
+						</li>
+
 						<!-- 一般ユーザー -->
 						<li class="nav-item dropdown" sec:authorize="hasRole('ROLE_GENERAL')">
+
 							<a id="navbarDropdownGeneral" class="nav-link dropdown-toggle" href="#" role="button"
 								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
 
 								<span sec:authentication="principal.user.name"></span>
+
 							</a>
 
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownGeneral">
+
 								<a class="dropdown-item moattravel-dropdown-item" th:href="@{/logout}"
 									onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+
 									ログアウト
+
 								</a>
 
-								<form class="d-none" id="logout-form" th:action="@{/logout}" method="post"></form>
+								<form class="d-none" id="logout-form" th:action="@{/logout}" method="post">
+								</form>
+
 							</div>
+
 						</li>
 
 						<!-- 管理者 -->
 						<li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+
 							<a id="navbarDropdownAdmin" class="nav-link dropdown-toggle" href="#" role="button"
 								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+
 								管理者メニュー
+
 							</a>
 
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAdmin">
@@ -87,18 +107,26 @@
 
 								<a class="dropdown-item moattravel-dropdown-item" th:href="@{/logout}"
 									onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+
 									ログアウト
+
 								</a>
 
-								<form class="d-none" id="logout-form" th:action="@{/logout}" method="post"></form>
+								<form class="d-none" id="logout-form" th:action="@{/logout}" method="post">
+								</form>
+
 							</div>
+
 						</li>
 
 					</ul>
+
 				</div>
 
 			</div>
+
 		</nav>
+
 	</div>
 
 
