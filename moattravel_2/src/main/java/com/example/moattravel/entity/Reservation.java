@@ -23,6 +23,10 @@ public class Reservation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer id;
+	
+	@ManyToOne
+	@JoinColumn(name = "house_id")
+	private House house;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -35,15 +39,15 @@ public class Reservation {
 	private LocalDate checkoutDate;
 
 	@Column(name = "number_of_people")
-	private Integer numberOfPeopele;
+	private Integer numberOfPeople;
 
 	@Column(name = "amount")
 	private Integer amount;
 
-	@Column(name = "updated_at", insertable = false, updatable = false)
+	@Column(name = "created_at", insertable = false, updatable = false)
 	private Timestamp createdAt;
 
 	@Column(name = "updated_at", insertable = false, updatable = false)
-	private Timestamp updateddAt;
+	private Timestamp updatedAt;
 
 }
