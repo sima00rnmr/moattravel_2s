@@ -1,5 +1,7 @@
 package com.example.moattravel.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,14 +23,11 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	public Page<House> findByAddressLikeOrderByCreatedAtDesc(String area, Pageable pageable);
 	public Page<House> findByAddressLikeOrderByPriceAsc(String area, Pageable pageable);
 	public Page<House> findByPriceLessThanEqualOrderByCreatedAtDesc(Integer price, Pageable pageable);
+	
+	List<House> findTop10ByOrderByCreatedAtDesc();
 	public Page<House> findByPriceLessThanEqualOrderByPriceAsc(Integer price, Pageable pageable);
 	public Page<House> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
 	public Page<House> findAllByOrderByPriceAsc(Pageable pageable);
-
-
-
-
-
-
 
 }
