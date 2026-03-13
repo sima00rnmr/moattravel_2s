@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.moattravel.entity.House;
@@ -94,11 +95,20 @@ public class ReservationController {
 		//宿泊料金を計算する
 		Integer price = house.getPrice();
 		Integer amount = reservationService.calculateAmount(checkinDate, checkoutDate, price);
-		ReservationRegisterForm reservationRegisterForm = new ReservationRegisterForm(house.getId(), user.getId(), checkinDate.toString(), checkoutDate.toString(), reservationInputForm.getNumberOfPeople(), amount);
+		ReservationRegisterForm reservationRegisterForm = new ReservationRegisterForm(house.getId(), user.getId(),
+				checkinDate.toString(), checkoutDate.toString(), reservationInputForm.getNumberOfPeople(), amount);
 
 		model.addAttribute("house", house);
-		model.addAttribute("reservationRegisterForm", reservationRegisterForm);       
-		
+		model.addAttribute("reservationRegisterForm", reservationRegisterForm);
+
 		return "reservations/confirm";
 	}
+
+	@PostMapping("/houses/{id}/reservations/create")
+	public String create(@ModelAttribute ReservationRegisterForm reservationRegisterForm) {
+		reservationService.create(reservationRegisterForm);
+
+		return "redirect:/reservations?reserved";
+	}
+
 }

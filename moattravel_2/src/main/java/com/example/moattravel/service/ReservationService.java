@@ -15,33 +15,48 @@ import com.example.moattravel.repository.ReservationRepository;
 import com.example.moattravel.repository.UserRepository;
 
 @Service
-public class ReservationService{
-	
-	private final ReservationRepository reservationRepository;  
+public class ReservationService {
+
+	private final ReservationRepository reservationRepository;
 	private final HouseRepository houseRepository;
 	private final UserRepository userRepository;
-	
-	public ReservationService(ReservationRepository reservationRepository, HouseRepository houseRepository, UserRepository userRepository) {
-		 this.reservationRepository = reservationRepository;
-		 this.houseRepository =houseRepository;
-		 this.userRepository = userRepository;
+
+	public ReservationService(ReservationRepository reservationRepository, HouseRepository houseRepository,
+			UserRepository userRepository) {
+		this.reservationRepository = reservationRepository;
+		this.houseRepository = houseRepository;
+		this.userRepository = userRepository;
 	}
+
 	@Transactional
-	public void create(ReservationRegisterForm) {
-		//一旦ここまで…　3/13 5時
+	public void create(ReservationRegisterForm reservationRegisterForm) {
+		Reservation reservation = new Reservation();
+		House house = houseRepository.getReferenceById(reservationRegisterForm.getHouseId());
+		User user = userRepository.getReferenceById(reservationRegisterForm.getUserId());
+		LocalDate checkinDate = LocalDate.parse(reservationRegisterForm.getCheckinDate());
+		LocalDate checkoutDate = LocalDate.parse(reservationRegisterForm.getCheckoutDate());
+
+		reservation.setHouse(house);
+		reservation.setUser(user);
+		reservation.setCheckinDate(checkinDate);
+		reservation.setCheckoutDate(checkoutDate);
+		reservation.setNumberOfPeople(reservationRegisterForm.getNumberOfPeople());
+		reservation.setAmount(reservationRegisterForm.getAmount());
+
+		reservationRepository.save(reservation);
+
 	}
-	
-	
+
 	//宿泊人数以下かどうかチェックする
-	public boolean isWithinCapacity(Integer numberOfPeople,Integer capacity) {
-		return numberOfPeople <= capacity;	
+	public boolean isWithinCapacity(Integer numberOfPeople, Integer capacity) {
+		return numberOfPeople <= capacity;
 	}
-	
-//宿泊料金を計算する
-	public Integer calculateAmount(LocalDate checkinDate,LocalDate checkoutDate,Integer price) {
-		long numberOfNights = ChronoUnit.DAYS.between(checkinDate,checkoutDate);
-		int amount =price *(int)numberOfNights;
+
+	//宿泊料金を計算する
+	public Integer calculateAmount(LocalDate checkinDate, LocalDate checkoutDate, Integer price) {
+		long numberOfNights = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+		int amount = price * (int) numberOfNights;
 		return amount;
 	}
-	
+
 }
