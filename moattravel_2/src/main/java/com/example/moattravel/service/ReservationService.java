@@ -2,6 +2,7 @@ package com.example.moattravel.service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,9 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public void create(Mao<String,String> paymentIntentObjec) {
+	public void create(Map<String, String> paymentIntentObject) {
+		/*System.out.println("Creating reservation with data: " + paymentIntentObject);//検証用
+		*/
 		Reservation reservation = new Reservation();
 		Integer houseId =Integer.valueOf(paymentIntentObject.get("houseId"));
 		Integer userId = Integer.valueOf(paymentIntentObject.get("userId"));
@@ -41,8 +44,9 @@ public class ReservationService {
 		LocalDate checkinDate = LocalDate.parse(paymentIntentObject.get("checkinDate"));
 		LocalDate checkoutDate = LocalDate.parse(paymentIntentObject.get("checkoutDate"));
 
-		Integer numberOfPeople = Integer.valueOf(paymentIntentObjct.get("numberOfPeople"));
-		Integer amount = Integer.valueOf(paymentIntentObjct.get("amount"));
+		Integer numberOfPeople = Integer.valueOf(paymentIntentObject.get("numberOfPeople"));
+		 Integer amount = Integer.valueOf(paymentIntentObject.get("amount")); 
+
 		
 		reservation.setHouse(house);
 		reservation.setUser(user);
