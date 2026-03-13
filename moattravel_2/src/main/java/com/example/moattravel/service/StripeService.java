@@ -10,85 +10,134 @@ import org.springframework.stereotype.Service;
 
 import com.example.moattravel.form.ReservationRegisterForm;
 import com.stripe.Stripe;
+import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
+import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionRetrieveParams;
 
 @Service
 public class StripeService {
-	@Value("${stripe.api-key}")
-	private String stripeApiKey;
 
-	private final ReservationService reservationService;
+    @Value("${stripe.api-key}")
+    private String stripeApiKey;
 
-	public StripeService(ReservationService reservationService) {
-		this.reservationService = reservationService;
+    @Value("${stripe.webhook-secret}")
+    private String webhookSecret;
 
-	}
+    private final ReservationService reservationService;
 
-	//セッションを作成し、Stripeに必要な情報を返す
-	public String createStripeSession(String houseName, ReservationRegisterForm reservationRegisterForm,
-			HttpServletRequest httpServletRequest) {
-		Stripe.apiKey = stripeApiKey;
+    public StripeService(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
-		String requestUrl = new String(httpServletRequest.getRequestURL());
-		SessionCreateParams params = SessionCreateParams.builder()
-				.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-				.addLineItem(
-						SessionCreateParams.LineItem.builder()
-								.setPriceData(
-										SessionCreateParams.LineItem.PriceData.builder()
-												.setProductData(
-														SessionCreateParams.LineItem.PriceData.ProductData.builder()
-																.setName(houseName)
-																.build())
-												.setUnitAmount((long) reservationRegisterForm.getAmount())
-												.setCurrency("jpy")
-												.build())
-								.setQuantity(1L)
-								.build())
-				.setMode(SessionCreateParams.Mode.PAYMENT)
-				.setSuccessUrl(
-						requestUrl.replaceAll("/houses/[0-9]+/reservations/confirm", "") + "/reservations?reserved")
-				.setCancelUrl(requestUrl.replace("/reservations/confirm", ""))
-				.setPaymentIntentData(
-						SessionCreateParams.PaymentIntentData.builder()
-								.putMetadata("houseId", reservationRegisterForm.getHouseId().toString())
-								.putMetadata("userId", reservationRegisterForm.getUserId().toString())
-								.putMetadata("checkinDate", reservationRegisterForm.getCheckinDate())
-								.putMetadata("checkoutDate", reservationRegisterForm.getCheckoutDate())
-								.putMetadata("numberOfPeople", reservationRegisterForm.getNumberOfPeople().toString())
-								.putMetadata("amount", reservationRegisterForm.getAmount().toString())
-								.build())
-				.build();
+    // =========================
+    // Checkoutセッション作成
+    // =========================
+    public String createStripeSession(
+            String houseName,
+            ReservationRegisterForm form,
+            HttpServletRequest request) {
 
-		try {
-			Session session = Session.create(params);
-			return session.getId();
-		} catch (StripeException e) {
-			e.printStackTrace();
-			return "";
-		}
-	}
+        Stripe.apiKey = stripeApiKey;
 
-	// セッションから予約情報を取得し、ReservationServiceクラスを介してデータベースに登録する
-	public void processSessionCompleted(Event event) {
-		Optional<StripeObject> optionalStripeObject = event.getDataObjectDeserializer().getObject();
-		optionalStripeObject.ifPresent(stripeObject -> {
-			Session session = (Session) stripeObject;
-			SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("payment_intent").build();
-			try {
-				session = Session.retrieve(session.getId(), params, null);
-				Map<String, String> paymentIntentObject = session.getPaymentIntentObject().getMetadata();
-				reservationService.create(paymentIntentObject);
-			} catch (StripeException e) {
-				e.printStackTrace();
+        String requestUrl = request.getRequestURL().toString();
 
-			}
-		});
-	}
+        SessionCreateParams params = SessionCreateParams.builder()
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .addLineItem(
+                        SessionCreateParams.LineItem.builder()
+                                .setPriceData(
+                                        SessionCreateParams.LineItem.PriceData.builder()
+                                                .setProductData(
+                                                        SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                .setName(houseName)
+                                                                .build())
+                                                .setUnitAmount((long) form.getAmount())
+                                                .setCurrency("jpy")
+                                                .build())
+                                .setQuantity(1L)
+                                .build())
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl(requestUrl.replaceAll("/houses/[0-9]+/reservations/confirm", "")
+                        + "/reservations?reserved")
+                .setCancelUrl(requestUrl.replace("/reservations/confirm", ""))
+                .setPaymentIntentData(
+                        SessionCreateParams.PaymentIntentData.builder()
+                                .putMetadata("houseId", form.getHouseId().toString())
+                                .putMetadata("userId", form.getUserId().toString())
+                                .putMetadata("checkinDate", form.getCheckinDate())
+                                .putMetadata("checkoutDate", form.getCheckoutDate())
+                                .putMetadata("numberOfPeople", form.getNumberOfPeople().toString())
+                                .putMetadata("amount", form.getAmount().toString())
+                                .build())
+                .build();
 
+        try {
+            Session session = Session.create(params);
+            return session.getId();
+        } catch (StripeException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    // =========================
+    // Webhook処理（完成版）
+    // =========================
+    public void processWebhook(String payload, String sigHeader) {
+
+        try {
+
+            // 🔥 署名検証
+            Event event = Webhook.constructEvent(
+                    payload,
+                    sigHeader,
+                    webhookSecret
+            );
+
+            // checkout.session.completed だけ処理
+            if (!"checkout.session.completed".equals(event.getType())) {
+                return;
+            }
+
+            Optional<StripeObject> optional =
+                    event.getDataObjectDeserializer().getObject();
+
+            if (optional.isEmpty()) {
+                return;
+            }
+
+            Session session = (Session) optional.get();
+
+            // 🔥 最新データ取得（安全）
+            session = Session.retrieve(
+                    session.getId(),
+                    SessionRetrieveParams.builder()
+                            .addExpand("payment_intent")
+                            .build(),
+                    null
+            );
+
+            if (session.getPaymentIntentObject() == null) {
+                return;
+            }
+
+            Map<String, String> metadata =
+                    session.getPaymentIntentObject().getMetadata();
+
+            // 🔥 予約作成
+            reservationService.create(metadata);
+
+            System.out.println("🔥 RESERVATION CREATED");
+
+        } catch (SignatureVerificationException e) {
+            System.out.println("❌ Invalid Stripe signature");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

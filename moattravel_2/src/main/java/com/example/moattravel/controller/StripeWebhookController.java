@@ -32,6 +32,11 @@ public class StripeWebhookController {
 	@PostMapping("/stripe/webhook")
 	public ResponseEntity<String> webhook(@RequestBody String payload,
 			@RequestHeader("Stripe-Signature") String sigHeader) {
+		//System.out.println("🔥 Webhook HIT");⑤
+		/*System.out.println("🔥 Webhook received!");//検証用
+		 * どうやらこれが原因っぽい
+		 * 
+		 * */
 
 		Stripe.apiKey = stripeApiKey;
 
@@ -42,9 +47,9 @@ public class StripeWebhookController {
 		} catch (SignatureVerificationException e) {
 			return new ResponseEntity<>("Webhook error", HttpStatus.BAD_REQUEST);
 		}
-
 		if ("checkout.session.completed".equals(event.getType())) {
-			stripeService.processSessionCompleted(event);
+			//System.out.println("🔥 Calling StripeService");  //検証用　⑤
+			stripeService.processWebhook(payload, sigHeader);
 		}
 
 		return new ResponseEntity<>("Success", HttpStatus.OK);
