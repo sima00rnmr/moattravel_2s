@@ -17,41 +17,43 @@ import com.stripe.net.Webhook;
 @Controller
 public class StripeWebhookController {
 
-	private final StripeService stripeService;
+    private final StripeService stripeService;
 
-	@Value("${stripe.api-key}")
-	private String stripeApiKey;
+    @Value("${stripe.api-key}")
+    private String stripeApiKey;
 
-	@Value("${stripe.webhook-secret}")
-	private String webhookSecret;
+    @Value("${stripe.webhook-secret}")
+    private String webhookSecret;
 
-	public StripeWebhookController(StripeService stripeService) {
-		this.stripeService = stripeService;
-	}
+    public StripeWebhookController(StripeService stripeService) {
+        this.stripeService = stripeService;
+    }
 
-	@PostMapping("/stripe/webhook")
-	public ResponseEntity<String> webhook(@RequestBody String payload,
-			@RequestHeader("Stripe-Signature") String sigHeader) {
-		//System.out.println("🔥 Webhook HIT");⑤
-		/*System.out.println("🔥 Webhook received!");//検証用
-		 * どうやらこれが原因っぽい
-		 * 
-		 * */
+    @PostMapping("/stripe/webhook")
+    public ResponseEntity<String> webhook(
+            @RequestBody String payload,
+            @RequestHeader("Stripe-Signature") String sigHeader) {
 
-		Stripe.apiKey = stripeApiKey;
+        System.out.println("🔥 Webhook HIT");
 
-		Event event = null;
+        Stripe.apiKey = stripeApiKey;
 
-		try {
-			event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
-		} catch (SignatureVerificationException e) {
-			return new ResponseEntity<>("Webhook error", HttpStatus.BAD_REQUEST);
-		}
-		if ("checkout.session.completed".equals(event.getType())) {
-			//System.out.println("🔥 Calling StripeService");  //検証用　⑤
-			stripeService.processWebhook(payload, sigHeader);
-		}
+        Event event;
 
-		return new ResponseEntity<>("Success", HttpStatus.OK);
-	}
+        try {
+            event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
+        } catch (SignatureVerificationException e) {
+            System.out.println("❌ Signature verification failed");
+            return new ResponseEntity<>("Webhook error", HttpStatus.BAD_REQUEST);
+        }
+
+        System.out.println("Stripe Event: " + event.getType());
+
+        if ("checkout.session.completed".equals(event.getType())) {
+            System.out.println("🔥 Calling StripeService");
+            stripeService.processWebhook(payload, sigHeader);
+        }
+
+        return ResponseEntity.ok("Success");
+    }
 }
