@@ -1,4 +1,48 @@
 package com.example.moattravel.controller;
+/*解決方法
+ * ①安全チェック付き→強制デシリアライズを使用
+ * getObject()では取得できないからOptional.emptyを使用。
+ * 
+ * 結果としてつながりはしたけど、これ問題ない…？
+ * 
+ * 
+ * ②expandでpayment_intentを展開
+ * 
+ * 
+ * metadataを確実に取得するため（→session.getMetadata()の取得）
+ * 以下の追記
+ * Session session = Session.retrieve(
+    session.getId(),
+    SessionRetrieveParams.builder()
+        .addExpand("payment_intent")
+        .build(),
+    null
+);
+ * 原因（後程もう少しちゃんと調べたい…）
+ * event.getDataObjectDeserializer().getObject() が 
+ * Optional.empty(イベントの中身をJavaオブジェクトに変換できなかった) になる場合があり
+ *Checkout Sessionを取得できなかったため。
+ *
+ *SDKの安全デシリアライズに失敗する場合がある理由
+ *・APIバージョン差
+ *・オブジェクト構造
+ *・フィールド展開　など
+ *
+ *…WebhookのJSONは不完全なことがある
+ *
+ *ライブラリで解決できないの…？
+ *ライブラリをフォークする必要がある…（メンテ地獄、バージョン更新不能で非推奨）
+ *
+ *〇公式が用意している逃げ道
+ *
+ *deserializeUnsafe()
+ *
+ *安全保証はしないけど
+とりあえずオブジェクト作る
+
+ * */
+
+
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
