@@ -14,7 +14,7 @@ Controller
 
 
 
-##　機能のまとめ
+## 機能のまとめ
 
 ### 検索
 トップページ
@@ -112,7 +112,8 @@ MoatTravel
 
 ## 決済が反映されない問題
 
-###　原因
+### 原因
+```
 session.getMetadata()　などが正常に実行できない状態
 イベントの中身をJavaオブジェクトに変換できなかった
 JSON → Sessionへの変換失敗した結果、Optional.empty（StripeがSessionオブジェクトを作れなかった）となってしまっていた。
@@ -214,4 +215,5 @@ Session取得には成功したが…新たな問題発見
 	session.getMetadata()の取得に成功
 	
 	決済→DBへの書き込み→各ユーザーが予約後に予約データの取得を確認
+```
 	
